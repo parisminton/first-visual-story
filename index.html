@@ -1,48 +1,97 @@
 {% extends 'base.html' %}
 
-{% block styles %}
-<link rel="stylesheet" href="{% static 'styles/app.scss' %}">
-{% endblock styles %}
-
-{% block scripts %}
-{% script 'app' %}
-{% endblock scripts %}
+{% block headline %}My headline will go here{% endblock headline %}
+{% block byline %}By me{% endblock byline %}
+{% block pubdate %}
+  <time datetime="2025-03-09" pubdate>March 9, 2025</time>
+{% endblock pubdate %}
 
 {% block content %}
-<article>
-  <header class="container">
-    <h1 class="headline">{{ meta.headline }}</h1>
-    <img src="{% static 'assets/images/baker.jpg' %}" alt="Baker logo" width=250 />
-    <div class="attribution">
-        {% set comma = joiner() %}
-        <p class="byline">
-          By {%- for author in meta.byline -%}
-          {% if not loop.last %}{{ comma() }}{% elif not loop.first %} and{% endif %} <span class="author" itemscope itemtype="http://schema.org/Person"><a itemprop="url" href="{{ author.url }}">{{ author.name }}</a></span>
-          {%- endfor -%}
-        </p>
-    </div>
-  </header>
-  <div class="container">
-    {% for p in copy.body %}
-        <p class="prose">{{ p.value }}</p>
-    {% endfor %}
-    <table class="table">
-        <caption>Wheat production</caption>
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Yield</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for obj in example %}
-            <tr>
-                <td>{{ obj.year }}</td>
-                <td>{{ obj.wheat }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<h3>A South L.A. neighborhood stands apart</h3>
+<p>
+  Harvard Park's 2016 homicide total was its highest in at least 15 years
+  despite a downward trend in killings across L.A. County.
+</p>
+<div class="graphics-container">
+  <div class="graphic">
+      <iframe
+    title="County homicides, 2000-2017"
+    aria-label="Column Chart"
+    id="datawrapper-chart-XSj9X"
+    src="https://datawrapper.dwcdn.net/XSj9X/5/"
+    scrolling="no"
+    frameborder="0"
+    style="width: 0; min-width: 100% !important; border: none;"
+    height="350"
+  ></iframe>
+  <script type="text/javascript">
+    !(function () {
+      'use strict';
+      window.addEventListener('message', function (e) {
+        if (void 0 !== e.data['datawrapper-height']) {
+          var t = document.querySelectorAll('iframe');
+          for (var a in e.data['datawrapper-height'])
+            for (var r = 0; r < t.length; r++) {
+              if (t[r].contentWindow === e.source)
+                t[r].style.height = e.data['datawrapper-height'][a] + 'px';
+            }
+        }
+      });
+    })();
+  </script>
   </div>
-</article>
+  <div class="graphic">
+    <iframe
+  title="Harvard Park homicides, 2000-2017"
+  aria-label="Column Chart"
+  id="datawrapper-chart-qvF1G"
+  src="https://datawrapper.dwcdn.net/qvF1G/4/"
+  scrolling="no"
+  frameborder="0"
+  style="width: 0; min-width: 100% !important; border: none;"
+  height="350"
+></iframe>
+<script type="text/javascript">
+  !(function () {
+    'use strict';
+    window.addEventListener('message', function (e) {
+      if (void 0 !== e.data['datawrapper-height']) {
+        var t = document.querySelectorAll('iframe');
+        for (var a in e.data['datawrapper-height'])
+          for (var r = 0; r < t.length; r++) {
+            if (t[r].contentWindow === e.source)
+              t[r].style.height = e.data['datawrapper-height'][a] + 'px';
+          }
+      }
+    });
+  })();
+</script>
+  </div>
+</div>
+
+
+<h3>Lives lost in Harvard Park</h3>
+<p>
+  The {{ harvard_park_homicides|length }} homicides in Harvard Park since 2000
+  were primarily black and Latino males,but the list includes husbands, wives,
+  fathers, mothers of all ages, and even some small children.
+</p>
+
+<div class="row" data-masonry='{"percentPosition": true }'>
+  {% for obj in harvard_park_homicides %}
+  <div class="col-sm-6 col-lg-4 mb-4">
+  <div class="card">
+    {% if obj.image %}<img class="card-img-top" src="{{ obj.image }}" alt="{{ obj.first_name }} {{ obj.last_name }}">{% endif %}
+    <div class="card-body">
+      <a href="http://homicide.latimes.com/post/{{ obj.slug }}" target="_blank">
+          <strong>
+              <h5 class="card-title">{{ obj.first_name }} {{ obj.last_name }}</h5>
+          </strong>
+      </a>
+      <p class="card-text">{{ obj.last_name }}, a {{ obj.age}}-year-old {{ obj.race }} {{ obj.gender }}, died in {{ obj.death_year }}.</p>
+    </div>
+  </div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock content %}
